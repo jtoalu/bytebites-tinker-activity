@@ -1,0 +1,36 @@
+classDiagram
+    class Customer {
+        +name: str
+        +purchase_history: list[Transaction]
+        +add_purchase(transaction: Transaction) void
+        +get_purchase_history() list[Transaction]
+    }
+
+    class Item {
+        +name: str
+        +price: float
+        +category: str
+        +popularity_rating: float
+        +get_price() float
+    }
+
+    class ItemCatalog {
+        +items: list[Item]
+        +add_item(item: Item) void
+        +filter_by_category(category: str) list[Item]
+    }
+
+    class Transaction {
+        +items: list[Item]
+        +total_cost: float
+        +add_item(item: Item) void
+        +calculate_total() float
+    }
+
+    Customer "1" --> "*" Transaction
+    ItemCatalog "1" --> "*" Item
+    Transaction "*" --> "*" Item
+
+    note for Customer "Tracks a customer's name and completed transactions.\nNo authentication or user verification logic."
+    note for ItemCatalog "In-memory collection; category matching is exact."
+    note for Transaction "total_cost is calculated from the current item prices."
