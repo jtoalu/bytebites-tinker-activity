@@ -34,13 +34,20 @@ Add focused validation
 
 class Customer:
 	def __init__(self, name: str):
-		pass
+		if not isinstance(name, str):
+			raise TypeError("name must be a string")
+		if not name.strip():
+			raise ValueError("name must not be empty")
+		self.name = name
+		self.purchase_history: list[Transaction] = []
 
 	def add_purchase(self, transaction: "Transaction") -> None:
-		pass
+		if not isinstance(transaction, Transaction):
+			raise TypeError("transaction must be a Transaction")
+		self.purchase_history.append(transaction)
 
 	def get_purchase_history(self) -> list["Transaction"]:
-		pass
+		return self.purchase_history
 
 
 class Item:
@@ -51,29 +58,55 @@ class Item:
 		category: str,
 		popularity_rating: float,
 	):
-		pass
+		if not isinstance(name, str):
+			raise TypeError("name must be a string")
+		if not name.strip():
+			raise ValueError("name must not be empty")
+		if isinstance(price, bool) or not isinstance(price, (int, float)):
+			raise TypeError("price must be numeric")
+		if price < 0:
+			raise ValueError("price must not be negative")
+		if not isinstance(category, str):
+			raise TypeError("category must be a string")
+		if not category.strip():
+			raise ValueError("category must not be empty")
+		self.name = name
+		self.price = float(price)
+		self.category = category
+		self.popularity_rating = popularity_rating
 
 	def get_price(self) -> float:
-		pass
+		return self.price
 
 
 class ItemCatalog:
 	def __init__(self):
-		pass
+		self.items: list[Item] = []
 
 	def add_item(self, item: Item) -> None:
-		pass
+		if not isinstance(item, Item):
+			raise TypeError("item must be an Item")
+		self.items.append(item)
 
 	def filter_by_category(self, category: str) -> list[Item]:
-		pass
+		return [item for item in self.items if item.category == category]
+
+	def sort_items(self, by: str, descending: bool = False) -> list[Item]:
+		if by not in ("name", "price", "popularity_rating"):
+			raise ValueError("by must be 'name', 'price', or 'popularity_rating'")
+		return sorted(self.items, key=lambda item: getattr(item, by), reverse=descending)
 
 
 class Transaction:
 	def __init__(self):
-		pass
+		self.items: list[Item] = []
+		self.total_cost = 0.0
 
 	def add_item(self, item: Item) -> None:
-		pass
+		if not isinstance(item, Item):
+			raise TypeError("item must be an Item")
+		self.items.append(item)
 
 	def calculate_total(self) -> float:
-		pass
+		self.total_cost = sum((item.get_price() for item in self.items), 0.0)
+		return self.total_cost
